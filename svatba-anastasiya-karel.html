@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anastasiya & Karel — 7. června 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #6b8f5e;
+      --green-light: #8aab7a;
+      --green-pale: #d4e3cc;
+      --green-muted: #a8c49a;
+      --cream: #faf8f4;
+      --cream-dark: #f2ede4;
+      --text: #2c3a28;
+      --text-light: #5a7050;
+      --gold: #b8975a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; gap: 2.5rem;
+      padding: 1.2rem 2rem;
+      background: rgba(250, 248, 244, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--green-pale);
+    }
+    nav a {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--green); }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative;
+      padding: 7rem 2rem 4rem;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, var(--green-pale) 0%, var(--cream) 70%);
+      z-index: 0;
+    }
+
+    /* Botanical SVG corners */
+    .botanical-corner {
+      position: absolute; width: 300px; height: 300px;
+      opacity: 0.18; z-index: 1;
+      pointer-events: none;
+    }
+    .botanical-corner.tl { top: 0; left: 0; transform-origin: top left; }
+    .botanical-corner.tr { top: 0; right: 0; transform: scaleX(-1); transform-origin: top right; }
+    .botanical-corner.bl { bottom: 0; left: 0; transform: scaleY(-1); transform-origin: bottom left; }
+    .botanical-corner.br { bottom: 0; right: 0; transform: scale(-1); transform-origin: bottom right; }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-tagline {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 1s 0.2s forwards;
+    }
+
+    .hero-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: 300;
+      line-height: 0.9;
+      color: var(--green);
+      letter-spacing: 0.02em;
+      opacity: 0; animation: fadeUp 1s 0.5s forwards;
+    }
+    .hero-ampersand {
+      font-size: 0.45em;
+      font-style: italic;
+      color: var(--green-light);
+      display: block;
+      margin: 0.3rem 0;
+      line-height: 1.2;
+    }
+
+    .hero-divider {
+      width: 80px; height: 1px;
+      background: var(--green-muted);
+      margin: 2rem auto;
+      opacity: 0; animation: fadeUp 1s 0.8s forwards;
+    }
+
+    .hero-date {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      opacity: 0; animation: fadeUp 1s 1s forwards;
+    }
+
+    .hero-venue {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--green);
+      margin-top: 0.5rem;
+      opacity: 0; animation: fadeUp 1s 1.1s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--green-light);
+      opacity: 0; animation: fadeUp 1s 1.5s forwards;
+      z-index: 2;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--green-muted), transparent);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTIONS GENERAL ─── */
+    section {
+      padding: 6rem 2rem;
+    }
+
+    .section-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--green-muted);
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      color: var(--green);
+      line-height: 1.1;
+      margin-bottom: 2.5rem;
+    }
+
+    .ornament {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .ornament-line { flex: 1; height: 1px; background: var(--green-pale); }
+    .ornament-leaf {
+      color: var(--green-muted);
+      font-size: 1rem;
+    }
+
+    p {
+      line-height: 1.8;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── PROGRAM ─── */
+    #program { background: var(--cream-dark); }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 0; top: 0.5rem; bottom: 0.5rem; width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--green-pale) 10%, var(--green-pale) 90%, transparent);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute; left: -2rem; top: 50%; transform: translate(-50%, -50%);
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--green-pale);
+      border: 2px solid var(--green-muted);
+    }
+
+    .timeline-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--green);
+      line-height: 1;
+      padding-top: 0.1rem;
+    }
+    .timeline-time span {
+      display: block;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green-muted);
+      margin-top: 0.2rem;
+    }
+
+    .timeline-text h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .timeline-text p {
+      font-size: 0.85rem;
+      margin-bottom: 0;
+    }
+
+    /* ─── STORY ─── */
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .photo-placeholder {
+      aspect-ratio: 3/4;
+      background: var(--green-pale);
+      border-radius: 2px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem;
+      color: var(--green-muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: 1px dashed var(--green-muted);
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-placeholder svg { opacity: 0.4; }
+    .photo-placeholder-label { opacity: 0.7; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.8rem;
+      height: 400px;
+    }
+    .photo-grid .photo-placeholder:first-child {
+      grid-row: span 2;
+      aspect-ratio: unset;
+    }
+
+    /* ─── LOGISTICS ─── */
+    #logistics { background: var(--cream-dark); }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--cream);
+      border: 1px solid var(--green-pale);
+      padding: 2rem;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, var(--green-pale), var(--green-muted), var(--green-pale));
+    }
+
+    .card-icon {
+      width: 36px; height: 36px;
+      margin-bottom: 1rem;
+      color: var(--green-muted);
+    }
+    .card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--green);
+      margin-bottom: 0.8rem;
+    }
+    .card p { font-size: 0.88rem; margin-bottom: 0.5rem; }
+
+    .card a {
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      margin-top: 0.8rem;
+      border-bottom: 1px solid var(--green-pale);
+      padding-bottom: 2px;
+      transition: border-color 0.3s;
+    }
+    .card a:hover { border-color: var(--green); }
+
+    /* ─── RSVP ─── */
+    #rsvp { text-align: center; }
+
+    .rsvp-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .rsvp-note {
+      background: var(--green-pale);
+      border-left: 3px solid var(--green-muted);
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    .rsvp-note strong { color: var(--green); font-weight: 400; }
+
+    /* Google Forms embed placeholder */
+    .form-embed {
+      background: var(--cream-dark);
+      border: 1px solid var(--green-pale);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    .form-embed .form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .form-embed code {
+      display: block;
+      margin-top: 1.5rem;
+      padding: 0.8rem 1rem;
+      background: rgba(107, 143, 94, 0.08);
+      border: 1px dashed var(--green-pale);
+      font-size: 0.75rem;
+      color: var(--green);
+      font-family: monospace;
+      text-align: left;
+      word-break: break-all;
+    }
+
+    /* Real form embed — when you paste the iframe */
+    .form-embed iframe {
+      width: 100%;
+      border: none;
+      min-height: 900px;
+    }
+
+    /* ─── FAQ ─── */
+    #faq { background: var(--cream-dark); }
+
+    .faq-list {
+      display: flex; flex-direction: column;
+      gap: 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--green-pale);
+      padding: 1.5rem 0;
+    }
+    .faq-item:first-child { border-top: 1px solid var(--green-pale); }
+
+    .faq-q {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text);
+      cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      list-style: none;
+      user-select: none;
+    }
+    .faq-q::after {
+      content: '+';
+      font-size: 1.5rem;
+      font-weight: 200;
+      color: var(--green-muted);
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-top: 1rem; }
+    .faq-a p { margin-bottom: 0; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--green);
+      color: var(--green-pale);
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+    }
+    footer .footer-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: white;
+      opacity: 0.9;
+    }
+    footer .footer-amp {
+      font-style: italic;
+      color: var(--green-pale);
+    }
+    footer p {
+      color: var(--green-pale);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      opacity: 0.7;
+      margin-top: 1rem;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      nav { gap: 1.2rem; flex-wrap: wrap; padding: 0.9rem 1rem; }
+      nav a { font-size: 0.6rem; }
+      .story-grid, .cards-grid { grid-template-columns: 1fr; }
+      .photo-grid { height: 280px; }
+      .botanical-corner { width: 180px; height: 180px; }
+      .timeline { padding-left: 1.5rem; }
+      .timeline-item { grid-template-columns: 60px 1fr; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav>
+  <a href="#program">Program</a>
+  <a href="#story">Náš příběh</a>
+  <a href="#logistics">Jak se dostat</a>
+  <a href="#rsvp">Potvrdit účast</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Botanical corner decorations -->
+  <svg class="botanical-corner tl" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 280 C40 200, 80 160, 150 100 C180 75, 220 50, 290 10" stroke="#6b8f5e" stroke-width="1.5" fill="none"/>
+    <ellipse cx="60" cy="200" rx="35" ry="20" transform="rotate(-30 60 200)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="100" cy="160" rx="28" ry="16" transform="rotate(-50 100 160)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="150" cy="110" rx="30" ry="18" transform="rotate(-70 150 110)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <circle cx="80" cy="140" r="8" fill="none" stroke="#6b8f5e" stroke-width="1"/>
+    <circle cx="180" cy="80" r="12" fill="none" stroke="#6b8f5e" stroke-width="1"/>
+    <path d="M30 260 Q50 230, 70 210" stroke="#6b8f5e" stroke-width="1" fill="none"/>
+    <path d="M130 130 Q160 100, 200 70" stroke="#6b8f5e" stroke-width="1" fill="none"/>
+    <ellipse cx="200" cy="55" rx="22" ry="14" transform="rotate(-80 200 55)" fill="none" stroke="#6b8f5e" stroke-width="1"/>
+    <!-- Bird suggestion -->
+    <path d="M230 30 Q245 20, 260 25 Q250 35, 235 38 Z" fill="#6b8f5e" opacity="0.5"/>
+    <path d="M245 28 Q260 15, 275 18 Q268 30, 252 33 Z" fill="#6b8f5e" opacity="0.4"/>
+  </svg>
+
+  <svg class="botanical-corner tr" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 280 C40 200, 80 160, 150 100 C180 75, 220 50, 290 10" stroke="#6b8f5e" stroke-width="1.5" fill="none"/>
+    <ellipse cx="60" cy="200" rx="35" ry="20" transform="rotate(-30 60 200)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="100" cy="160" rx="28" ry="16" transform="rotate(-50 100 160)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="150" cy="110" rx="30" ry="18" transform="rotate(-70 150 110)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <circle cx="80" cy="140" r="8" fill="none" stroke="#6b8f5e" stroke-width="1"/>
+    <circle cx="180" cy="80" r="12" fill="none" stroke="#6b8f5e" stroke-width="1"/>
+    <path d="M230 30 Q245 20, 260 25 Q250 35, 235 38 Z" fill="#6b8f5e" opacity="0.5"/>
+  </svg>
+
+  <svg class="botanical-corner bl" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 280 C40 200, 80 160, 150 100 C180 75, 220 50, 290 10" stroke="#6b8f5e" stroke-width="1.5" fill="none"/>
+    <ellipse cx="60" cy="200" rx="35" ry="20" transform="rotate(-30 60 200)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="100" cy="160" rx="28" ry="16" transform="rotate(-50 100 160)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="150" cy="110" rx="30" ry="18" transform="rotate(-70 150 110)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+  </svg>
+
+  <svg class="botanical-corner br" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 280 C40 200, 80 160, 150 100 C180 75, 220 50, 290 10" stroke="#6b8f5e" stroke-width="1.5" fill="none"/>
+    <ellipse cx="60" cy="200" rx="35" ry="20" transform="rotate(-30 60 200)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="100" cy="160" rx="28" ry="16" transform="rotate(-50 100 160)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+    <ellipse cx="150" cy="110" rx="30" ry="18" transform="rotate(-70 150 110)" fill="none" stroke="#6b8f5e" stroke-width="1.2"/>
+  </svg>
+
+  <div class="hero-content">
+    <p class="hero-tagline">Přijměte prosím naše pozvání na den, kdy si řekneme ano</p>
+    <div class="hero-names">
+      Anastasiya
+      <span class="hero-ampersand">&amp;</span>
+      Karel
+    </div>
+    <div class="hero-divider"></div>
+    <p class="hero-date">7. června 2026 &nbsp;|&nbsp; od 12:00</p>
+    <p class="hero-venue">Na Kmíně, Obříství</p>
+  </div>
+
+  <div class="scroll-hint">sroluj dolů</div>
+</section>
+
+<!-- ─── PROGRAM ─── -->
+<section id="program">
+  <div class="section-inner">
+    <span class="section-label">Harmonogram dne</span>
+    <h2 class="section-title">Program</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <span class="ornament-leaf">❧</span>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-time">12:00<span>hod.</span></div>
+        <div class="timeline-text">
+          <h3>Příchod hostů</h3>
+          <p>Vítáme vás na statku Na Kmíně. Přijďte si na uvítanou skleničku a přivítejte se s ostatními hosty.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">13:00<span>hod.</span></div>
+        <div class="timeline-text">
+          <h3>Obřad</h3>
+          <p>Slavnostní okamžik — říkáme si ANO. Místo doplňte dle potřeby.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">14:00<span>hod.</span></div>
+        <div class="timeline-text">
+          <h3>Svatební hostina</h3>
+          <p>Slavnostní oběd, přípitky a první tanec novomanželů.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">18:00<span>hod.</span></div>
+        <div class="timeline-text">
+          <h3>Taneční zábava</h3>
+          <p>Hudba, tanec a dobré nálady do pozdních hodin.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin-top: 2rem; font-size: 0.82rem; font-style: italic; color: var(--green-muted);">
+      ✎ Detailní program doplníme brzy — sledujte tuto stránku.
+    </p>
+  </div>
+</section>
+
+<!-- ─── OUR STORY ─── -->
+<section id="story">
+  <div class="section-inner">
+    <span class="section-label">Náš příběh</span>
+    <h2 class="section-title">Jak to začalo</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <span class="ornament-leaf">❧</span>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="story-grid">
+      <div>
+        <p>
+          Tady napište váš příběh — kde jste se poznali, co vás sblížilo, a jak Karel požádal Anastasiyou o ruku. 
+          Hosté to budou milovat. 💚
+        </p>
+        <p>
+          Tento text jednoduše upravte — stačí otevřít soubor v libovolném textovém editoru a nahradit tento 
+          odstavec vaším vlastním příběhem.
+        </p>
+        <p style="margin-top: 1.5rem; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; color: var(--green);">
+          "A tehdy jsme věděli, že tohle je ten pravý."
+        </p>
+      </div>
+      <div class="photo-grid">
+        <div class="photo-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span class="photo-placeholder-label">Vaše foto</span>
+        </div>
+        <div class="photo-placeholder">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+          </svg>
+        </div>
+        <div class="photo-placeholder">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LOGISTICS ─── -->
+<section id="logistics">
+  <div class="section-inner">
+    <span class="section-label">Praktické informace</span>
+    <h2 class="section-title">Jak se dostat & ubytování</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <span class="ornament-leaf">❧</span>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="card">
+        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        <h3>Místo konání</h3>
+        <p>Na Kmíně<br/>Bedřicha Smetany 24<br/>Obříství</p>
+        <a href="https://maps.google.com/?q=Bedřicha+Smetany+24,+Obříství" target="_blank" rel="noopener">
+          Otevřít v Mapách →
+        </a>
+      </div>
+
+      <div class="card">
+        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <h3>Doprava</h3>
+        <p>Parkování u areálu k dispozici zdarma. Z Prahy cca 30 minut autem po D8.</p>
+        <p>Pokud potřebujete odvoz nebo nabízíte místa ve svém autě, uveďte to prosím v dotazníku.</p>
+      </div>
+
+      <div class="card">
+        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <h3>Ubytování</h3>
+        <p>Přímo v areálu Na Kmíně je k dispozici ubytování. Kapacita je omezená — pokud máte zájem, dejte nám vědět co nejdříve v dotazníku.</p>
+        <a href="#rsvp">Rezervovat v dotazníku →</a>
+      </div>
+
+      <div class="card">
+        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <h3>Dress code</h3>
+        <p>Slavnostní elegance. Preferujeme přírodní a zemité tóny — ale především přijďte tak, jak se ve svém oblečení budete cítit krásně. 🌿</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── RSVP ─── -->
+<section id="rsvp">
+  <div class="section-inner rsvp-wrapper">
+    <span class="section-label">Potvrzení účasti</span>
+    <h2 class="section-title">Dejte nám vědět</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <span class="ornament-leaf">❧</span>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="rsvp-note">
+      <strong>Prosíme o vyplnění dotazníku do 1. dubna 2026.</strong> Pomůže nám to s přípravou jídla, 
+      ubytování a dalšími detaily. Vážíme si každé odpovědi!
+    </div>
+
+    <!-- 
+      ══════════════════════════════════════════════════════
+      JAK SEM VLOŽIT VÁŠE GOOGLE FORMS:
+      1. Otevřete váš formulář na forms.google.com
+      2. Klikněte na "Odeslat" (tlačítko vpravo nahoře)
+      3. Klikněte na ikonu <> (Vložit)
+      4. Zkopírujte celý iframe kód
+      5. Nahraďte element .form-embed níže tímto iframe kódem
+      ══════════════════════════════════════════════════════
+    -->
+    <div class="form-embed">
+      <p class="form-title">Dotazník pro hosty</p>
+      <p>Brzy zde bude k dispozici formulář pro potvrzení vaší účasti.</p>
+      <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">Sledujte tuto stránku — formulář bude aktivní v nejbližších dnech.</p>
+      <code>
+        &lt;!-- SEM VLOŽTE VÁŠ GOOGLE FORMS IFRAME --&gt;<br/>
+        &lt;iframe src="https://docs.google.com/forms/d/e/VÁŠE-ID/viewform?embedded=true"<br/>
+        &nbsp;&nbsp;width="100%" height="900" frameborder="0"&gt;&lt;/iframe&gt;
+      </code>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section id="faq">
+  <div class="section-inner">
+    <span class="section-label">Časté otázky</span>
+    <h2 class="section-title">FAQ</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <span class="ornament-leaf">❧</span>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q">Mohu přivézt děti?</div>
+        <div class="faq-a"><p>Samozřejmě! Děti jsou vítány. Pokud plánujete přijít s dětmi, prosíme uveďte jejich počet v dotazníku, abychom mohli zajistit odpovídající zázemí.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Jak se mohu dostat na místo bez auta?</div>
+        <div class="faq-a"><p>Z Prahy jezdí vlaky do Mělníka, odkud je to asi 10 minut autem/taxíkem. V dotazníku také najdete možnost domluvit odvoz s ostatními hosty.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Je v areálu wifi a místo pro odkládání věcí?</div>
+        <div class="faq-a"><p>Ano, wifi v areálu k dispozici je. Heslo dostanete při příchodu. Šatna a úschovna pro věci bude také zajištěna.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Mohu vyfotografovat obřad?</div>
+        <div class="faq-a"><p>Focení vítáme! Prosíme jen, abyste si na obřadu nesedali do uliček a nezdržovali fotografa. Po obřadu je focení zcela volné. Rádi uvidíme vaše fotky! 📷</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Co dát jako dárek?</div>
+        <div class="faq-a"><p>Vaše přítomnost je pro nás tím nejlepším dárkem. Pokud chcete přidat i hmotný příspěvek, uvítáme finanční dar na naše společné sny. Žádné dárkové registry nemáme.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Mám na vás dotaz, který tady nenajdu.</div>
+        <div class="faq-a"><p>Ozvěte se nám přímo! Kontakt najdete níže v patičce stránky. Rádi odpovíme na cokoliv.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-names">
+    Anastasiya <span class="footer-amp">&amp;</span> Karel
+  </div>
+  <p>7. června 2026 · Na Kmíně, Obříství</p>
+  <p style="margin-top: 2rem;">
+    Dotazy? Napište nám: 
+    <a href="mailto:vas@email.cz" style="color: var(--green-pale); text-decoration: none; border-bottom: 1px solid rgba(212,227,204,0.4);">
+      vas@email.cz
+    </a>
+  </p>
+  <p style="margin-top: 2.5rem; font-size: 0.65rem; opacity: 0.4; letter-spacing: 0.1em;">
+    ✦ Těšíme se na vás ✦
+  </p>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Subtle scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.timeline-item, .card, .faq-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
